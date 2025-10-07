@@ -7,6 +7,7 @@ import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ShoppingBag, Mail, Lock, User, CheckCircle2 } from 'lucide-react';
 
+
 const Signup = () => {
   const navigate = useNavigate();
   type FormErrors = {
@@ -41,7 +42,12 @@ const Signup = () => {
     setErrors({});
     setSuccess('');
 
-    const newErrors = {};
+    const newErrors = {
+      name: undefined,
+      email: undefined,
+      password: undefined,
+      confirmPassword: undefined
+    };
     if (!formData.name.trim()) newErrors.name = 'Name is required';
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';

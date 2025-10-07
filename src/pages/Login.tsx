@@ -38,7 +38,10 @@ const Login = () => {
     setErrors({});
     setSuccess('');
 
-    const newErrors = {};
+    const newErrors = {
+      email: undefined,
+      password: undefined
+    };
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
     } else if (!validateUSCEmail(formData.email)) {
