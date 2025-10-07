@@ -36,7 +36,6 @@ const Hero = () => {
             Your trusted marketplace for second-hand goods. Sustainable, safe, and exclusively for USC students.
           </p>
           
-          // In the Hero component, update the buttons section:
           <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up [animation-delay:400ms]">
             <Button variant="hero" size="lg" className="text-lg" onClick={() => navigate('/signup')}>
               Start Shopping

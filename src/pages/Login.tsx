@@ -13,7 +13,13 @@ const Login = () => {
     email: '',
     password: ''
   });
-  const [errors, setErrors] = useState({});
+  type FormErrors = {
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+    name?: string;
+ };
+  const [errors, setErrors] = useState<FormErrors>({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
 

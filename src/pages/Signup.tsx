@@ -9,13 +9,20 @@ import { ShoppingBag, Mail, Lock, User, CheckCircle2 } from 'lucide-react';
 
 const Signup = () => {
   const navigate = useNavigate();
+  type FormErrors = {
+    email?: string;
+    password?: string;
+    confirmPassword?: string;
+    name?: string;
+  };
+
+  const [errors, setErrors] = useState<FormErrors>({});
   const [formData, setFormData] = useState({
     name: '',
     email: '',
     password: '',
     confirmPassword: ''
   });
-  const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
   const [success, setSuccess] = useState('');
 
