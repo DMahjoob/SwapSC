@@ -1,8 +1,10 @@
 import { Button } from "@/components/ui/button";
 import { ArrowRight, Shield } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import heroImage from "@/assets/hero-marketplace.jpg";
 
 const Hero = () => {
+  const navigate = useNavigate();
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden pt-16">
       {/* Background Image with Overlay */}
@@ -34,12 +36,13 @@ const Hero = () => {
             Your trusted marketplace for second-hand goods. Sustainable, safe, and exclusively for USC students.
           </p>
           
+          // In the Hero component, update the buttons section:
           <div className="flex flex-col sm:flex-row gap-4 animate-fade-in-up [animation-delay:400ms]">
-            <Button variant="hero" size="lg" className="text-lg">
+            <Button variant="hero" size="lg" className="text-lg" onClick={() => navigate('/signup')}>
               Start Shopping
               <ArrowRight className="ml-2 h-5 w-5" />
             </Button>
-            <Button variant="heroSecondary" size="lg" className="text-lg">
+            <Button variant="heroSecondary" size="lg" className="text-lg" onClick={() => navigate('/login')}>
               List an Item
             </Button>
           </div>
