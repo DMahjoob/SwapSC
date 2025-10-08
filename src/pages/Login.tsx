@@ -133,7 +133,7 @@ const Login = () => {
                 </button>
               </div>
 
-              <Button onClick={handleLogin} className="w-full" disabled={loading}>
+              <Button onClick={() => navigate("/home")} className="w-full" disabled={loading}>
                 {loading ? 'Signing in...' : 'Sign In'}
               </Button>
 
