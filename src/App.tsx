@@ -8,6 +8,8 @@ import Login from "./pages/Login";
 import Signup from "./pages/Signup";
 import SearchPage from "./pages/SearchPage.tsx";
 import NotFound from "./pages/NotFound";
+import Home from "./pages/Home.tsx";
+import ListingForm from "./pages/ListingForm.tsx";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +26,8 @@ const App = () => (
           <Route path="*" element={<NotFound />} />
           {/*TODO make this page only accessible to logged in users*/}
           <Route path="/search" element={<SearchPage />} />
+          <Route path="/home" element={<Home />} />
+          <Route path="/listing/new" element={<ListingForm />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>

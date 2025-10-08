@@ -124,7 +124,7 @@ const SearchPage = () => {
                         {/* Back button */}
                         <button
                             type="button"
-                            onClick={() => navigate("/")}
+                            onClick={() => navigate("/home")}
                             className="w-full text-sm text-muted-foreground hover:text-foreground mt-2"
                         >
                             ← Back to home
