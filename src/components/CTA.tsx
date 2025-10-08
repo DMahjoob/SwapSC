@@ -10,7 +10,7 @@ const CTA = () => {
       
       <div className="container relative z-10 mx-auto px-4 sm:px-6 lg:px-8 text-center">
         <h2 className="text-4xl sm:text-5xl font-bold text-primary-foreground mb-6 animate-fade-in">
-          Ready to Start Swappin'?
+          Ready to Start Swapping?
         </h2>
         <p className="text-xl text-primary-foreground/90 max-w-2xl mx-auto mb-8 animate-fade-in-up">
           Join hundreds of USC students buying and selling sustainably within the Trojan community.
@@ -20,6 +20,7 @@ const CTA = () => {
             size="lg" 
             variant="secondary"
             className="text-lg shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-105"
+            onClick={() => navigate('/signup')}
           >
             Create Your Account
             <ArrowRight className="ml-2 h-5 w-5" />
@@ -28,7 +29,7 @@ const CTA = () => {
             size="lg" 
             variant="outline"
             className="text-lg bg-primary-foreground/10 border-primary-foreground/30 text-primary-foreground hover:bg-primary-foreground/20 hover:text-primary-foreground shadow-lg"
-            onClick={() => navigate('/signup')}
+            onClick={() => navigate('/login')}
           >
             Browse Listings
           </Button>
