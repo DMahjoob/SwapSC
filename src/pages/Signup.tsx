@@ -42,12 +42,8 @@ const Signup = () => {
     setErrors({});
     setSuccess('');
 
-    const newErrors = {
-      name: undefined,
-      email: undefined,
-      password: undefined,
-      confirmPassword: undefined
-    };
+    const newErrors: FormErrors = {};
+    
     if (!formData.name.trim()) newErrors.name = 'Name is required';
     if (!formData.email.trim()) {
       newErrors.email = 'Email is required';
@@ -68,13 +64,8 @@ const Signup = () => {
       return;
     }
 
-    setLoading(true);
     // TODO: Replace with your API call
-    setTimeout(() => {
-      setLoading(false);
-      setSuccess('Account created successfully! Redirecting...');
-      setTimeout(() => navigate('/'), 1500);
-    }, 1500);
+    navigate('/login');
   };
 
   return (
