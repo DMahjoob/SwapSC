@@ -3,9 +3,18 @@ import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { ShoppingBag, PlusCircle, Search } from "lucide-react";
+import { useEffect } from "react";
 
 const Home = () => {
   const navigate = useNavigate();
+  useEffect(() => {
+    const script = document.createElement("script");
+    script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5371687786277747";
+    script.async = true;
+    script.crossOrigin = "anonymous";
+    document.body.appendChild(script);
+    return () => document.body.removeChild(script);
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background">

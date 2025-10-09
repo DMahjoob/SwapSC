@@ -6,9 +6,18 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Alert, AlertDescription } from '@/components/ui/alert';
 import { ShoppingBag, Mail, Lock, User, CheckCircle2 } from 'lucide-react';
+import { useEffect } from "react";
 
 
 const Signup = () => {
+  useEffect(() => {
+      const script = document.createElement("script");
+      script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5371687786277747";
+      script.async = true;
+      script.crossOrigin = "anonymous";
+      document.body.appendChild(script);
+      return () => document.body.removeChild(script);
+    }, []);
   const navigate = useNavigate();
   type FormErrors = {
     email?: string;
