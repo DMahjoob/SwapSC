@@ -8,14 +8,7 @@ import { ShoppingBag, Search } from "lucide-react";
 import { useEffect } from "react";
 
 const SearchPage = () => {
-    useEffect(() => {
-        const script = document.createElement("script");
-        script.src = "https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-5371687786277747";
-        script.async = true;
-        script.crossOrigin = "anonymous";
-        document.body.appendChild(script);
-        return () => document.body.removeChild(script);
-    }, []);
+
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState("");
     const [priceRange, setPriceRange] = useState("");
