@@ -16,7 +16,7 @@ const Signup = () => {
       script.async = true;
       script.crossOrigin = "anonymous";
       document.body.appendChild(script);
-      return () => document.body.removeChild(script);
+      return () => { document.body.removeChild(script); };
     }, []);
   const navigate = useNavigate();
   type FormErrors = {

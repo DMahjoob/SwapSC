@@ -11,6 +11,7 @@ import NotFound from "./pages/NotFound";
 import Home from "./pages/Home.tsx";
 import ListingForm from "./pages/ListingForm.tsx";
 import BrowsePage from "./pages/BrowsePage.tsx";
+import ProductPage from "./pages/ProductPage.tsx";
 
 const queryClient = new QueryClient();
 
@@ -30,6 +31,7 @@ const App = () => (
           <Route path="/browse" element={<BrowsePage />} />
           <Route path="/home" element={<Home />} />
           <Route path="/listing/new" element={<ListingForm />} />
+          <Route path="/listing/:id" element={<ProductPage />} />
         </Routes>
       </BrowserRouter>
     </TooltipProvider>
