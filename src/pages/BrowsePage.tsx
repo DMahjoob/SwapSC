@@ -1,9 +1,19 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { sampleListings } from "@/data/sampleData";
 import { useNavigate } from "react-router-dom";
+import { useEffect, useState } from "react";
+import { API_URL } from '@/config/api';
 
 const BrowsePage = () => {
+
+    const [listings, setListings] = useState([]);
     const navigate = useNavigate();
+
+    useEffect(() => {
+        fetch(`${API_URL}/api/products`)
+            .then((res) => res.json())
+            .then((data) => setListings(data))
+            .catch((err) => console.error("Error loading products:", err));
+    }, []);
 
     return (
         <div className="min-h-screen bg-muted/20 p-8">
@@ -17,11 +27,11 @@ const BrowsePage = () => {
             </button>
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
-                {sampleListings.map((listing) => (
+                {listings.map((listing) => (
                     <Card
-                        key={listing.id}
+                        key={listing._id}
                         className="hover:shadow-lg transition cursor-pointer"
-                        onClick={() => navigate(`/listing/${listing.id}`)}
+                        onClick={() => navigate(`/listing/${listing._id}`)}
                     >
                         <img
                             src={listing.imageUrl}

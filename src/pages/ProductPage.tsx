@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useMemo, useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,11 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
-import { sampleListings } from "@/data/sampleData";
+import { API_URL } from '@/config/api';
 import { ArrowLeft, ShieldCheck, MapPin, Star, MessageCircle, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
+import axios from "axios";
 
-type Listing = (typeof sampleListings)[number];
+
+//type Listing = (typeof sampleListings)[number];
 
 // Mock seller data
 const fallbackSeller = {
@@ -30,17 +32,36 @@ const fallbackSeller = {
 const ListingDetail = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
-
-  // Find listing by id from your mock data
-  const listing: Listing | undefined = useMemo(
-    () => sampleListings.find((l) => String(l.id) === String(id)),
-    [id]
-  );
-
-  const seller = (listing as any)?.seller ?? fallbackSeller;
+  const [listing, setListing] = useState<any | null>(null);
+  const [loading, setLoading] = useState(true);
 
   const [offer, setOffer] = useState("");
   const [message, setMessage] = useState("");
+
+  // // Find listing by id from your mock data
+  // const listing: Listing | undefined = useMemo(
+  //   () => sampleListings.find((l) => String(l.id) === String(id)),
+  //   [id]
+  // );
+  useEffect(() => {
+    const fetchListing = async () => {
+      try {
+       const res = await axios.get(`${API_URL}/api/products/${id}`);
+        setListing(res.data);
+      } catch (err) {
+        console.error(err);
+        setListing(null);
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchListing();
+  }, [id]);
+
+  if (loading) return <p>Loading...</p>;
+
+  const seller = (listing as any)?.seller ?? fallbackSeller;
+
 
   if (!listing) {
     return (
