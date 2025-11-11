@@ -48,6 +48,46 @@ app.get("/api/products", async (req, res) => {
     }
 });
 
+// endpoint to search for products by title with price and condition
+app.get("/api/products/search", async (req, res) => {
+    try {
+        const { title, priceRange, condition } = req.query;
+
+        const query = {};
+
+        // Search by title (partial, case-insensitive)
+        if (title) query.title = { $regex: title, $options: "i" };
+
+        // Filter by price range
+        if (priceRange && priceRange !== "Any") {
+            if (priceRange.startsWith("<")) {
+                query.price = { $lt: Number(priceRange.slice(1)) };
+            } else if (priceRange.includes("-")) {
+                const [min, max] = priceRange.split("-").map(s => Number(s.replace("$", "")));
+                query.price = { $gte: min, $lte: max };
+            } else if (priceRange.endsWith("+")) {
+                query.price = { $gte: Number(priceRange.slice(1, -1)) }; // remove '+'
+            }
+        }
+
+        // Filter by condition
+        if (condition && condition !== "Any") query.condition = condition;
+
+        const products = await Product.find(query);
+
+        const productsWithFullUrl = products.map(p => ({
+            ...p._doc,
+            imageUrl: `${process.env.BACKEND_URL || 'http://localhost:5000'}${p.imageUrl}`,
+        }));
+
+        res.json(productsWithFullUrl);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: "Server error" });
+    }
+});
+
+
 // to be used to add products to the page (implement)
 app.post("/api/products", async (req, res) => {
     const newProduct = new Product(req.body);
