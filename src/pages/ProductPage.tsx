@@ -1,4 +1,5 @@
-import { useMemo, useState, useEffect } from "react";
+// src/pages/ProductPage.tsx - Updated version
+import { useState, useEffect } from "react";
 import { useNavigate, useParams } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -9,15 +10,12 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
 import { Separator } from "@/components/ui/separator";
+import { ProductRecommendations } from "@/components/ProductRecommendations";
 import { API_URL } from '@/config/api';
 import { ArrowLeft, ShieldCheck, MapPin, Star, MessageCircle, ShoppingCart } from "lucide-react";
 import { toast } from "sonner";
 import axios from "axios";
 
-
-//type Listing = (typeof sampleListings)[number];
-
-// Mock seller data
 const fallbackSeller = {
   id: "seller-usc",
   name: "USC Student",
@@ -29,24 +27,20 @@ const fallbackSeller = {
   bio: "Buying & selling around campus. Flexible meetups at Village / Leavey.",
 };
 
-const ListingDetail = () => {
+const ProductPage = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [listing, setListing] = useState<any | null>(null);
+  const [allProducts, setAllProducts] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
-
   const [offer, setOffer] = useState("");
   const [message, setMessage] = useState("");
 
-  // // Find listing by id from your mock data
-  // const listing: Listing | undefined = useMemo(
-  //   () => sampleListings.find((l) => String(l.id) === String(id)),
-  //   [id]
-  // );
+  // Fetch the current product
   useEffect(() => {
     const fetchListing = async () => {
       try {
-       const res = await axios.get(`${API_URL}/api/products/${id}`);
+        const res = await axios.get(`${API_URL}/api/products/${id}`);
         setListing(res.data);
       } catch (err) {
         console.error(err);
@@ -58,10 +52,22 @@ const ListingDetail = () => {
     fetchListing();
   }, [id]);
 
-  if (loading) return <p>Loading...</p>;
+  // Fetch all products for recommendations
+  useEffect(() => {
+    const fetchAllProducts = async () => {
+      try {
+        const res = await axios.get(`${API_URL}/api/products`);
+        setAllProducts(res.data);
+      } catch (err) {
+        console.error("Error loading products for recommendations:", err);
+      }
+    };
+    fetchAllProducts();
+  }, []);
 
-  const seller = (listing as any)?.seller ?? fallbackSeller;
+  if (loading) return <p className="text-center py-20">Loading...</p>;
 
+  const seller = listing?.seller ?? fallbackSeller;
 
   if (!listing) {
     return (
@@ -73,9 +79,7 @@ const ListingDetail = () => {
   }
 
   const handleBuy = () => {
-    toast.success("Great! We’ve notified the seller you’re interested. Check your messages.");
-    // Placeholder: navigate to a “My Messages” page or back to browse
-    // navigate("/messages");
+    toast.success("Great! We've notified the seller you're interested. Check your messages.");
   };
 
   const handleSendMessage = () => {
@@ -97,7 +101,6 @@ const ListingDetail = () => {
   return (
     <div className="min-h-screen bg-muted/20">
       <div className="mx-auto max-w-6xl p-6">
-        {/* Back */}
         <button
           type="button"
           onClick={() => navigate(-1)}
@@ -137,8 +140,7 @@ const ListingDetail = () => {
               <div>
                 <h3 className="font-semibold mb-2">Description</h3>
                 <p className="text-sm text-muted-foreground">
-                  {listing.description ??
-                    "No description provided. Seller didn’t add details for this item."}
+                  {listing.description ?? "No description provided."}
                 </p>
               </div>
               <Separator />
@@ -151,7 +153,6 @@ const ListingDetail = () => {
 
           {/* Right: Actions + Seller */}
           <div className="space-y-6">
-            {/* Actions */}
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Interested?</CardTitle>
@@ -187,7 +188,7 @@ const ListingDetail = () => {
                         <Label htmlFor="msg">Message</Label>
                         <Textarea
                           id="msg"
-                          placeholder="Hi! Is this still available? When can we meet at Leavey?"
+                          placeholder="Hi! Is this still available?"
                           value={message}
                           onChange={(e) => setMessage(e.target.value)}
                           rows={5}
@@ -205,7 +206,6 @@ const ListingDetail = () => {
               </CardContent>
             </Card>
 
-            {/* Seller */}
             <Card>
               <CardHeader>
                 <CardTitle className="text-lg">Seller</CardTitle>
@@ -229,26 +229,32 @@ const ListingDetail = () => {
                   </div>
                   <Separator orientation="vertical" className="h-4" />
                   <div>{seller.sales ?? 0} sales</div>
-                  <Separator orientation="vertical" className="h-4" />
-                  <div>Joined {seller.joined}</div>
                 </div>
 
                 {seller.bio && (
                   <p className="text-sm text-muted-foreground">{seller.bio}</p>
                 )}
 
-                <Button
-                  variant="secondary"
-                >
-                  View Profile
-                </Button>
+                <Button variant="secondary">View Profile</Button>
               </CardContent>
             </Card>
           </div>
         </div>
+
+        {/* Recommendations Section */}
+        {allProducts.length > 0 && (
+          <div className="mt-12">
+            <Separator className="mb-8" />
+            <ProductRecommendations
+              currentProduct={listing}
+              allProducts={allProducts}
+              numRecommendations={3}
+            />
+          </div>
+        )}
       </div>
     </div>
   );
 };
 
-export default ListingDetail;
+export default ProductPage;
