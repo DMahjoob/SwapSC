@@ -1,11 +1,21 @@
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
-import { API_URL } from '@/config/api';
+import { API_URL } from "@/config/api";
+import { recordListingClick } from "@/lib/listingClickTracker";
+
+type Listing = {
+    _id: string;
+    title: string;
+    imageUrl: string;
+    price: number;
+    condition: string;
+    location: string;
+};
 
 const BrowsePage = () => {
 
-    const [listings, setListings] = useState([]);
+    const [listings, setListings] = useState<Listing[]>([]);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -14,6 +24,16 @@ const BrowsePage = () => {
             .then((data) => setListings(data))
             .catch((err) => console.error("Error loading products:", err));
     }, []);
+
+    const handleListingClick = (listing: Listing) => {
+        recordListingClick({
+            id: listing._id,
+            name: listing.title,
+            clickedAt: new Date().toISOString(),
+        });
+
+        navigate(`/listing/${listing._id}`);
+    };
 
     return (
         <div className="min-h-screen bg-muted/20 p-8">
@@ -31,7 +51,7 @@ const BrowsePage = () => {
                     <Card
                         key={listing._id}
                         className="hover:shadow-lg transition cursor-pointer"
-                        onClick={() => navigate(`/listing/${listing._id}`)}
+                        onClick={() => handleListingClick(listing)}
                     >
                         <img
                             src={listing.imageUrl}
