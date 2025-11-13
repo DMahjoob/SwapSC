@@ -1,21 +1,23 @@
+// src/pages/SearchPage.tsx - Fixed version with proper error handling
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ShoppingBag, Search } from "lucide-react";
-import { useEffect } from "react";
-import {API_URL} from "@/config/api.ts";
+import { ShoppingBag, Search, AlertCircle } from "lucide-react";
+import { API_URL } from "@/config/api.ts";
+import { Alert, AlertDescription } from "@/components/ui/alert";
 
 const SearchPage = () => {
-
     const navigate = useNavigate();
     const [searchTerm, setSearchTerm] = useState("");
     const [priceRange, setPriceRange] = useState("");
     const [results, setResults] = useState<any[]>([]);
     const [loading, setLoading] = useState(false);
     const [condition, setCondition] = useState("");
+    const [error, setError] = useState<string | null>(null);
+    const [hasSearched, setHasSearched] = useState(false);
 
     const suggestedSearches = [
         "Couch",
@@ -27,6 +29,8 @@ const SearchPage = () => {
     const handleSearch = async () => {
         const params = new URLSearchParams();
         setLoading(true);
+        setError(null);
+        setHasSearched(true);
 
         if (searchTerm) params.append("title", searchTerm);
         if (priceRange && priceRange !== "Any") params.append("priceRange", priceRange);
@@ -37,21 +41,30 @@ const SearchPage = () => {
             const data = await response.json();
 
             console.log("Search results:", data);
-            setResults(data);
-            // TODO: store in state and render
-            setLoading(false);
+
+            // Check if the response is an error object
+            if (data.error) {
+                setError(data.error);
+                setResults([]);
+            } else if (Array.isArray(data)) {
+                setResults(data);
+                setError(null);
+            } else {
+                setError("Unexpected response format from server");
+                setResults([]);
+            }
         } catch (err) {
             console.error("Error fetching search results:", err);
+            setError("Failed to connect to server. Please try again.");
             setResults([]);
+        } finally {
             setLoading(false);
         }
     };
 
-
     return (
-        <div
-            className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background flex items-center justify-center p-4">
-            <div className="w-full max-w-2xl">
+        <div className="min-h-screen bg-gradient-to-br from-background via-muted/30 to-background p-4">
+            <div className="max-w-6xl mx-auto">
                 <div className="text-center mb-8">
                     <div
                         className="flex items-center justify-center gap-2 mb-2 cursor-pointer"
@@ -59,13 +72,13 @@ const SearchPage = () => {
                     >
                         <ShoppingBag className="w-8 h-8 text-primary"/>
                         <span className="text-3xl font-bold bg-gradient-primary bg-clip-text text-transparent">
-              SwapSC
-            </span>
+                            SwapSC
+                        </span>
                     </div>
                     <p className="text-muted-foreground">USC Student Marketplace</p>
                 </div>
 
-                <Card className="border-2 shadow-xl">
+                <Card className="border-2 shadow-xl mb-6">
                     <CardHeader>
                         <CardTitle className="text-2xl font-bold text-center">
                             Search Marketplace
@@ -75,15 +88,14 @@ const SearchPage = () => {
                         </CardDescription>
                     </CardHeader>
                     <CardContent className="space-y-6">
-
                         {/* Suggested Searches */}
                         <div className="flex flex-wrap justify-center gap-2">
-                            <span>Suggested Searches:</span>
+                            <span className="text-sm text-muted-foreground">Suggested:</span>
                             {suggestedSearches.map((item) => (
                                 <Button
                                     key={item}
                                     variant="outline"
-                                    className="text-sm"
+                                    size="sm"
                                     onClick={() => setSearchTerm(item)}
                                 >
                                     {item}
@@ -102,6 +114,7 @@ const SearchPage = () => {
                                     className="pl-10"
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
+                                    onKeyDown={(e) => e.key === "Enter" && handleSearch()}
                                 />
                             </div>
                         </div>
@@ -142,8 +155,8 @@ const SearchPage = () => {
                         </div>
 
                         {/* Search Button */}
-                        <Button className="w-full mt-4" onClick={handleSearch}>
-                            Search
+                        <Button className="w-full mt-4" onClick={handleSearch} disabled={loading}>
+                            {loading ? "Searching..." : "Search"}
                         </Button>
 
                         {/* Back button */}
@@ -156,33 +169,51 @@ const SearchPage = () => {
                         </button>
                     </CardContent>
                 </Card>
-            </div>
-            <div className="w-full max-w-2xl mt-6 space-y-4">
-                {
-                    results.map((product) => (
-                        <Card key={product._id} className="shadow-md border">
-                            <img
-                                src={product.imageUrl}
-                                alt={product.title}
-                                className="w-full h-48 object-cover rounded-t-md"
-                            />
-                            <CardContent>
-                                <CardTitle>{product.title}</CardTitle>
-                                <CardDescription>{product.description}</CardDescription>
-                                <p className="font-semibold mt-2">${product.price}</p>
-                                <p className="text-sm text-muted-foreground">{product.condition}</p>
-                                <Button
-                                    variant="outline"
-                                    size="sm"
-                                    className="mt-2"
-                                    onClick={() => navigate(`/product/${product._id}`)}
-                                >
-                                    View
-                                </Button>
-                            </CardContent>
-                        </Card>
-                    ))
-                }
+
+                {/* Error Display */}
+                {error && (
+                    <Alert variant="destructive" className="mb-6">
+                        <AlertCircle className="h-4 w-4" />
+                        <AlertDescription>{error}</AlertDescription>
+                    </Alert>
+                )}
+
+                {/* Results */}
+                {loading && (
+                    <div className="text-center py-8">
+                        <p className="text-muted-foreground">Searching...</p>
+                    </div>
+                )}
+
+                {!loading && hasSearched && !error && results.length === 0 && (
+                    <div className="text-center py-8">
+                        <p className="text-muted-foreground">No products found. Try different search terms.</p>
+                    </div>
+                )}
+
+                {!loading && results.length > 0 && (
+                    <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+                        {results.map((product) => (
+                            <Card key={product._id} className="shadow-md border hover:shadow-lg transition cursor-pointer"
+                                  onClick={() => navigate(`/listing/${product._id}`)}>
+                                <img
+                                    src={product.imageUrl}
+                                    alt={product.title}
+                                    className="w-full h-48 object-cover rounded-t-md"
+                                />
+                                <CardContent className="p-4">
+                                    <CardTitle className="text-lg mb-2">{product.title}</CardTitle>
+                                    <CardDescription className="line-clamp-2 mb-2">
+                                        {product.description}
+                                    </CardDescription>
+                                    <p className="font-semibold text-primary text-lg">${product.price}</p>
+                                    <p className="text-sm text-muted-foreground">{product.condition}</p>
+                                    <p className="text-sm text-muted-foreground">{product.location}</p>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                )}
             </div>
         </div>
     );
