@@ -5,6 +5,7 @@ import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import path from "path";
 import { Product } from "./models/Product.js";
+import {API_URL} from "../src/config/api.js";
 
 // link to mongo database
 const MONGO_URI="mongodb+srv://mgfreema:FXEQ2jmZARgsKsCZ@swapsc-cluster.dyerqqz.mongodb.net/swapsc?retryWrites=true&w=majority";
@@ -39,7 +40,7 @@ app.get("/api/products", async (req, res) => {
 
         const productsWithFullUrl = products.map(p => ({
             ...p._doc,
-            imageUrl: `${'https://swapsc-db.onrender.com' || 'http://localhost:5000'}${p.imageUrl}`,
+            imageUrl: `${API_URL}${p.imageUrl}`,
         }));
 
         res.json(productsWithFullUrl);
@@ -77,7 +78,7 @@ app.get("/api/products/search", async (req, res) => {
 
         const productsWithFullUrl = products.map(p => ({
             ...p._doc,
-            imageUrl: `${'https://swapsc-db.onrender.com' || 'http://localhost:5000'}${p.imageUrl}`,
+            imageUrl: `${API_URL}${p.imageUrl}`,
         }));
 
         res.json(productsWithFullUrl);
@@ -113,7 +114,7 @@ app.get("/api/products/:id", async (req, res) => {
         // prepend backend URL for image
         const fullProduct = {
             ...product._doc,
-            imageUrl: `${'https://swapsc-db.onrender.com' || 'http://localhost:5000'}${product.imageUrl}`
+            imageUrl: `${API_URL}${product.imageUrl}`
         };
 
         res.json(fullProduct);
