@@ -6,7 +6,7 @@ import { Badge } from "@/components/ui/badge";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Lightbulb } from "lucide-react";
 import { 
-  getRecommendations, 
+  getCachedRecommendations, 
   type Product,
   type RecommendationResponse 
 } from "@/lib/recommendationService";
