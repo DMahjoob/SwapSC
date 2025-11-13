@@ -39,7 +39,7 @@ app.get("/api/products", async (req, res) => {
 
         const productsWithFullUrl = products.map(p => ({
             ...p._doc,
-            imageUrl: `${process.env.BACKEND_URL || 'http://localhost:5000'}${p.imageUrl}`,
+            imageUrl: `${'https://swapsc-db.onrender.com' || 'http://localhost:5000'}${p.imageUrl}`,
         }));
 
         res.json(productsWithFullUrl);
