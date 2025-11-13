@@ -1,8 +1,10 @@
+// src/pages/BrowsePage.tsx - Updated with Recommendation Popup
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 import { API_URL } from "@/config/api";
 import { recordListingClick } from "@/lib/listingClickTracker";
+import { RecommendationPopup } from "@/components/RecommendationPopup";
 
 type Listing = {
     _id: string;
@@ -11,11 +13,13 @@ type Listing = {
     price: number;
     condition: string;
     location: string;
+    description?: string;
 };
 
 const BrowsePage = () => {
-
     const [listings, setListings] = useState<Listing[]>([]);
+    const [selectedListing, setSelectedListing] = useState<Listing | null>(null);
+    const [showRecommendations, setShowRecommendations] = useState(false);
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -32,7 +36,9 @@ const BrowsePage = () => {
             clickedAt: new Date().toISOString(),
         });
 
-        navigate(`/listing/${listing._id}`);
+        // Show recommendation popup instead of immediately navigating
+        setSelectedListing(listing);
+        setShowRecommendations(true);
     };
 
     return (
@@ -69,6 +75,16 @@ const BrowsePage = () => {
                     </Card>
                 ))}
             </div>
+
+            {/* Recommendation Popup */}
+            {selectedListing && (
+                <RecommendationPopup
+                    clickedProduct={selectedListing}
+                    allProducts={listings}
+                    open={showRecommendations}
+                    onOpenChange={setShowRecommendations}
+                />
+            )}
         </div>
     );
 };
