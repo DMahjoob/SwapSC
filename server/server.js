@@ -77,7 +77,7 @@ app.get("/api/products/search", async (req, res) => {
 
         const productsWithFullUrl = products.map(p => ({
             ...p._doc,
-            imageUrl: `${process.env.BACKEND_URL || 'http://localhost:5000'}${p.imageUrl}`,
+            imageUrl: `${'https://swapsc-db.onrender.com' || 'http://localhost:5000'}${p.imageUrl}`,
         }));
 
         res.json(productsWithFullUrl);
@@ -113,7 +113,7 @@ app.get("/api/products/:id", async (req, res) => {
         // prepend backend URL for image
         const fullProduct = {
             ...product._doc,
-            imageUrl: `${process.env.BACKEND_URL || 'http://localhost:5000'}${product.imageUrl}`
+            imageUrl: `${'https://swapsc-db.onrender.com' || 'http://localhost:5000'}${product.imageUrl}`
         };
 
         res.json(fullProduct);
