@@ -5,6 +5,9 @@ import { useEffect, useState } from "react";
 import { API_URL } from "@/config/api";
 import { recordListingClick } from "@/lib/listingClickTracker";
 import { RecommendationPopup } from "@/components/RecommendationPopup";
+import { incrementClickCount, shouldShowRecommendations } from "@/lib/clickCounterService";
+import { ClickProgressIndicator } from "@/components/ClickProgressIndicator";
+import { toast } from "sonner";
 
 type Listing = {
     _id: string;
@@ -36,9 +39,24 @@ const BrowsePage = () => {
             clickedAt: new Date().toISOString(),
         });
 
-        // Show recommendation popup instead of immediately navigating
-        setSelectedListing(listing);
-        setShowRecommendations(true);
+        // Increment click count
+        const newCount = incrementClickCount();
+
+        // Check if we should show recommendations
+        if (shouldShowRecommendations()) {
+            // Show recommendation popup
+            setSelectedListing(listing);
+            setShowRecommendations(true);
+        } else {
+            // Not enough clicks yet, go directly to product page
+            const remaining = 2 - newCount; // CLICK_THRESHOLD is 2
+            if (remaining > 0) {
+                toast.info(`Click ${remaining} more product${remaining > 1 ? 's' : ''} to unlock personalized recommendations!`, {
+                    duration: 2000,
+                });
+            }
+            navigate(`/listing/${listing._id}`);
+        }
     };
 
     return (
@@ -51,6 +69,9 @@ const BrowsePage = () => {
             >
                 ← Back to home
             </button>
+
+            {/* Progress Indicator */}
+            <ClickProgressIndicator />
 
             <div className="grid gap-6 sm:grid-cols-2 lg:grid-cols-3">
                 {listings.map((listing) => (
