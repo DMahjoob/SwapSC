@@ -5,7 +5,7 @@ import dotenv from "dotenv";
 import { fileURLToPath } from "url";
 import path from "path";
 import { Product } from "./models/Product.js";
-import {API_URL} from "../src/config/api.ts";
+//import {API_URL} from "../src/config/api.ts";
 
 // link to mongo database
 const MONGO_URI="mongodb+srv://mgfreema:FXEQ2jmZARgsKsCZ@swapsc-cluster.dyerqqz.mongodb.net/swapsc?retryWrites=true&w=majority";
@@ -96,9 +96,15 @@ app.get("/api/products/search", async (req, res) => {
 
         console.log(`Found ${products.length} products`);
 
+        const isLocal = window.location.hostname === "localhost";
+
+        const baseUrl = isLocal
+            ? "http://localhost:5000" // your local backend
+            : "https://swapsc-db.onrender.com"; // deployed backend
+
         const productsWithFullUrl = products.map(p => ({
             ...p._doc,
-            imageUrl: `${API_URL}${p.imageUrl}`,
+            imageUrl: `${baseUrl}${p.imageUrl}`,
         }));
 
         res.json(productsWithFullUrl);
@@ -134,10 +140,16 @@ app.get("/api/products/:id", async (req, res) => {
         console.log(product); //TODO remove
         if (!product) return res.status(404).json({ error: "Product not found" });
 
+        const isLocal = window.location.hostname === "localhost";
+
+        const baseUrl = isLocal
+            ? "http://localhost:5000" // your local backend
+            : "https://swapsc-db.onrender.com"; // deployed backend
+
         // prepend backend URL for image
         const fullProduct = {
             ...product._doc,
-            imageUrl: `${API_URL}${product.imageUrl}`
+            imageUrl: `${baseUrl}${product.imageUrl}`
         };
 
         res.json(fullProduct);
