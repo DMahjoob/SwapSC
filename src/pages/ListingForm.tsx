@@ -9,6 +9,7 @@ import { Textarea } from "@/components/ui/textarea"; // if you have it; else use
 import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem } from "@/components/ui/select";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { CheckCircle2, ShoppingBag } from "lucide-react";
+import {API_URL} from "@/config/api.ts";
 
 const ListingForm = () => {
   const navigate = useNavigate();
@@ -26,7 +27,7 @@ const ListingForm = () => {
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) =>
     setForm({ ...form, [e.target.name]: e.target.value });
 
-  const handleSave = () => {
+  const handleSave = async () => {
     // Basic validation
     if (!form.title.trim() || !form.price.trim()) {
       alert("Please fill in at least a title and price.");
@@ -34,12 +35,39 @@ const ListingForm = () => {
     }
 
     setSaving(true);
-    // TODO: replace with API call
-    setTimeout(() => {
-      setSaving(false);
-      setSuccess("Listing created! Redirecting to Home…");
+    try {
+      const response = await fetch(`${API_URL}/api/products`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          title: form.title,
+          price: Number(form.price),
+          condition: form.condition,
+          location: form.location,
+          description: form.description,
+          imageUrl: form.imageUrl || "",
+        }),
+      });
+      if (!response.ok) throw new Error("Failed to save product!");
+      setSuccess("Listing created! Redirecting to home...");
+      setForm({
+        title: "",
+        price: "",
+        condition: "Used",
+        location: "",
+        imageUrl: "",
+        description: "",
+      });
       setTimeout(() => navigate("/home"), 1200);
-    }, 1200);
+    } catch (err) {
+      console.error(err);
+      alert("Error creating listing!");
+    } finally {
+      setSaving(false);
+    }
+
   };
 
   return (
