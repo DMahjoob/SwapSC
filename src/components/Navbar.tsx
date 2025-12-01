@@ -16,11 +16,8 @@ const Navbar = () => {
             </span>
           </div>
           <div className="flex items-center gap-4">
-            <Button variant="ghost" className="hidden sm:inline-flex">
+            <Button onClick={() => navigate('/about')} variant="ghost" className="hidden sm:inline-flex">
               About
-            </Button>
-            <Button variant="ghost" className="hidden sm:inline-flex">
-              How It Works
             </Button>
             <Button variant="outline" onClick={() => navigate('/login')}>
               Sign In

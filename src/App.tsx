@@ -9,6 +9,7 @@ import Signup from "./pages/Signup";
 import SearchPage from "./pages/SearchPage.tsx";
 import NotFound from "./pages/NotFound";
 import Home from "./pages/Home.tsx";
+import About from "./pages/About.tsx"
 import ListingForm from "./pages/ListingForm.tsx";
 import BrowsePage from "./pages/BrowsePage.tsx";
 import ProductPage from "./pages/ProductPage.tsx";
@@ -27,6 +28,7 @@ const App = () => (
           <Route path="/signup" element={<Signup />} />
           <Route path="*" element={<NotFound />} />
           {/*TODO make this page only accessible to logged in users*/}
+          <Route path="/about" element={<About />} />
           <Route path="/search" element={<SearchPage />} />
           <Route path="/browse" element={<BrowsePage />} />
           <Route path="/home" element={<Home />} />
