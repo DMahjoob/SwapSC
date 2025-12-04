@@ -16,7 +16,7 @@ type Listing = {
     price: number;
     condition: string;
     location: string;
-    description?: string;
+    description: string;
 };
 
 const BrowsePage = () => {
