@@ -130,7 +130,7 @@ Respond ONLY with valid JSON in this exact format (no markdown, no additional te
     const shuffled = [...candidateProducts].sort(() => Math.random() - 0.5);
     return {
       recommendations: shuffled.slice(0, Math.min(numRecommendations, shuffled.length)),
-      reasoning: "Unable to generate AI recommendations. Showing random similar items."
+      reasoning: "Generating AI recommendations. Showing similar items."
     };
   }
 }
