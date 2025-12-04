@@ -124,7 +124,7 @@ Respond ONLY with valid JSON in this exact format (no markdown, no additional te
       reasoning: result.reasoning
     };
   } catch (error) {
-    console.error("Error getting recommendations:", error);
+    console.error("Generating recommendations...", error);
     
     // Fallback: return random products if API fails
     const shuffled = [...candidateProducts].sort(() => Math.random() - 0.5);
