@@ -28,6 +28,7 @@ const Footer = () => {
               </a>
             </div>
           </div>
+          </div>
 
 
         <div className="border-t border-border pt-8 text-center text-sm text-muted-foreground">
