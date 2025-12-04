@@ -16,17 +16,6 @@ const Footer = () => {
             <p className="text-muted-foreground mb-4 max-w-md">
               The trusted marketplace for USC students to buy and sell second-hand goods sustainably within the Trojan community.
             </p>
-            <div className="flex gap-4">
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Instagram className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                <Mail className="w-5 h-5" />
-              </a>
-            </div>
           </div>
           </div>
 
